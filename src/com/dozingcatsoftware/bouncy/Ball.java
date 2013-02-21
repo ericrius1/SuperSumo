@@ -34,8 +34,8 @@ public class Ball {
 		//velocity = new Vector2((-1 + RAND.nextFloat()*2), (-1 + RAND.nextFloat()*2));
 		velocity = new Vector2(0, 0);
 		id = count;
-		maxspeed = 0.5f;
-		maxforce = 0.1f;
+		maxspeed = 1.0f;
+		maxforce = 0.01f;
 		
 		body = Box2DFactory.createCircle(Field.world, x, y, radius, false);
 		body.setBullet(true);
@@ -59,7 +59,7 @@ public class Ball {
 		  worldTarget = worldTarget.sub(bodyVector);
 		  //Then scale vector to specified force
 		  worldTarget = worldTarget.nor();
-		  worldTarget = worldTarget.mul(50.0f);
+		  worldTarget = worldTarget.mul(1.0f);
 		  //Now apply it to the body's center of mass
 		  body.applyForce(worldTarget, bodyVector);
 	  }
@@ -97,7 +97,7 @@ public class Ball {
 		desired = desired.nor();
 		desired = desired.mul(maxspeed);
 		//desired = body.getLinearVelocity().sub(desired);
-		desired = desired.sub(body.getLinearVelocity().mul(-1.0f));
+		desired = desired.sub(body.getLinearVelocity());
 		limit(desired, maxforce);
 		return desired;
 	}

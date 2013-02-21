@@ -6,9 +6,9 @@
 		
 		"delegate": "Field1Delegate",
 		"targetTimeRatio": 2.5,
-		"gravity": 0.2,
+		"gravity": 0.1,
 		
-		"numballs": 3,
+	
 		"ballradius": 0.5,
 		"ballcolor": [192, 192, 224],
 		"launch": {"position": [19.4, 3.0], "velocity": [0, 0], "random_velocity": [0, 0]},
@@ -20,10 +20,10 @@
 			"and type=specific additional attributes. The element classes are defined",
 			"in the com.dozingcatsoftware.bouncy.element package.", 
 			               	
-		    {"class": "WallElement", "position": [0.1, 1, 10, 1], "kill": true},
-			{"class": "WallElement", "position": [10, 1, 20, 1]},
-		 
-			
+		    {"class": "WallElement", "position": [0.0, 0.0, 20, 0.0],},
+			{"class": "WallElement", "position": [0.0, 0.0, 0.0, 30.0]},
+			{"class": "WallElement", "position": [20.0, 0.0, 20.0, 30.0]},
+			{"class": "WallElement", "position": [0.0,30.0, 20.0, 30.0]},
 	
 			
 			
