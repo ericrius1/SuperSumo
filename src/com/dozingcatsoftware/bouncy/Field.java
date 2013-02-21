@@ -33,7 +33,7 @@ public class Field implements ContactListener {
 	FieldLayout layout;
 	World world;
 	Camera cam;
-	
+
 	Vector3 touchPoint;
 
 	List<Body> layoutBodies;
@@ -88,12 +88,11 @@ public class Field implements ContactListener {
 			return actionTime.compareTo(another.actionTime);
 		}
 	}
-	
-	public Field(Camera cam)
-	{
+
+	public Field (Camera cam) {
 		this.cam = cam;
 		touchPoint = new Vector3();
-	
+
 	}
 
 	/** Creates Box2D world, reads layout definitions for the given level (currently only one), and initializes the game to the
@@ -118,12 +117,22 @@ public class Field implements ContactListener {
 		fieldElements = new HashMap<String, FieldElement>();
 		List<FieldElement> tickElements = new ArrayList<FieldElement>();
 
-
+		for (FieldElement element : layout.getFieldElements()) {
+			if (element.getElementID() != null) {
+				fieldElements.put(element.getElementID(), element);
+			}
+			for (Body body : element.getBodies()) {
+				bodyToFieldElement.put(body, element);
+			}
+			if (element.shouldCallTick()) {
+				tickElements.add(element);
+			}
+		}
 		fieldElementsToTick = tickElements.toArray(new FieldElement[0]);
 
 		delegate = new Field1Delegate();
 	}
-	
+
 	public void startGame () {
 		gameState.setTotalBalls(layout.getNumberOfBalls());
 		gameState.startNewGame();
@@ -145,7 +154,9 @@ public class Field implements ContactListener {
 			clearBallContacts();
 			world.step(dt, 10, 10);
 			processBallContacts();
+			
 		}
+		
 
 		gameTime += msecs;
 		processElementTicks();
@@ -189,7 +200,7 @@ public class Field implements ContactListener {
 		List<Float> velocity = layout.getLaunchVelocity();
 		float radius = layout.getBallRadius();
 
-		Body ball = Box2DFactory.createCircle(world, RAND.nextFloat()*10, RAND.nextFloat()*40, radius, false);
+		Body ball = Box2DFactory.createCircle(world, RAND.nextFloat() * 10, RAND.nextFloat() * 40, radius, false);
 		ball.setBullet(true);
 		ball.setLinearVelocity(new Vector2(velocity.get(0), velocity.get(1)));
 		this.balls.add(ball);
@@ -266,17 +277,15 @@ public class Field implements ContactListener {
 		int len = balls.size();
 		for (int i = 0; i < len; i++) {
 			Body ball = balls.get(i);
-			if(Gdx.input.justTouched()){
-				//Vector3 toucPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
-				//ball.setTransform(touchPoint.x, touchPoint.y, 0);
+			if (Gdx.input.justTouched()) {
+				// Vector3 toucPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
+				// ball.setTransform(touchPoint.x, touchPoint.y, 0);
 			}
 			CircleShape shape = (CircleShape)ball.getFixtureList().get(0).getShape();
 			renderer.fillCircle(ball.getPosition().x, ball.getPosition().y, shape.getRadius(), color.get(0), color.get(1),
 				color.get(2));
 		}
 	}
-
-
 
 	/** Ends a game in progress by removing all balls in play, calling setGameInProgress(false) on the GameState, and setting a
 	 * "Game Over" message for display by the score view. */
@@ -309,8 +318,9 @@ public class Field implements ContactListener {
 
 	/** Called after Box2D world step method, to notify FieldElements that the ball collided with. */
 	void processBallContacts () {
-		int len = balls.size();
-		for (int i = 0; i < len; i++) {
+		
+		for (int i = 0; i < balls.size(); i++) {
+			
 			Body ball = balls.get(i);
 			if (ball.getUserData() == null) continue;
 
@@ -358,7 +368,7 @@ public class Field implements ContactListener {
 			fixtures.add(fixture);
 		}
 	}
-	
+
 	private Vector3 screenToViewport (float x, float y) {
 		cam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 		return touchPoint;

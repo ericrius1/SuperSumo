@@ -71,7 +71,7 @@ public class Field1Delegate extends BaseFieldDelegate {
 
 	@Override
 	public void ballLost (Field field) {
-		setLaunchBarrierEnabled(field, false);
+		//setLaunchBarrierEnabled(field, false);
 	}
 
 }

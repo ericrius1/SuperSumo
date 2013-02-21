@@ -20,7 +20,7 @@
 			"and type=specific additional attributes. The element classes are defined",
 			"in the com.dozingcatsoftware.bouncy.element package.", 
 			               	
-		    {"class": "WallElement", "position": [0.1, 1, 20, 1]},
+		    {"class": "WallElement", "position": [0.1, 1, 20, 1], "kill": true},
 		 
 			
 	
