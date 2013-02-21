@@ -61,7 +61,7 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		renderer.end();
 
 		renderer.begin();
-		field.drawBalls(renderer);
+		field.flock.run(renderer);
 		renderer.end();
 		renderMean.addValue((TimeUtils.nanoTime() - startRender) / 1000000000.0f);
 
@@ -87,21 +87,6 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 
 	}
 
-	@Override
-	public boolean touchDown (int x, int y, int pointer, int button) {
-		field.removeDeadBalls();
-		return false;
-	}
 
-	@Override
-	public boolean touchUp (int x, int y, int pointer, int button) {
-		field.removeDeadBalls();
-		return false;
-	}
 
-	@Override
-	public boolean touchDragged (int x, int y, int pointer) {
-		
-		return false;
-	}
 }

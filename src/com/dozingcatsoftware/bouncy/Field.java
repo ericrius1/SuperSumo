@@ -31,13 +31,12 @@ import com.dozingcatsoftware.bouncy.fields.Field1Delegate;
 public class Field implements ContactListener {
 
 	FieldLayout layout;
-	public static World world;
+   static World world;
 	Camera cam;
 
 	Vector3 touchPoint;
 
 	List<Body> layoutBodies;
-	List<Body> balls;
 
 	// allow access to model objects from Box2d bodies
 	Map<Body, FieldElement> bodyToFieldElement;
@@ -105,12 +104,10 @@ public class Field implements ContactListener {
 		touchPoint = new Vector3();
 		world = new World(gravity, doSleep);
 		world.setContactListener(this);
-		balls = new ArrayList<Body>();
 		flock = new Flock();
 
 		layout = FieldLayout.layoutForLevel(level, world);
 		world.setGravity(new Vector2(0.0f, -layout.getGravity()));
-		balls = new ArrayList<Body>();
 
 		scheduledActions = new PriorityQueue<ScheduledAction>();
 		gameTime = 0;
@@ -161,7 +158,6 @@ public class Field implements ContactListener {
 			processBallContacts();
 			
 		}
-		
 
 		gameTime += msecs;
 		processElementTicks();
@@ -200,60 +196,18 @@ public class Field implements ContactListener {
 		scheduledActions.add(sa);
 	}
 
-	/** Launches a new ball. The position and velocity of the ball are controlled by the "launch" key in the field layout JSON. */
-//	public Body addBall (float x, float y) {
-//		List<Float> velocity = layout.getLaunchVelocity();
-//		float radius = layout.getBallRadius();
-//		
-//		Body ball = Box2DFactory.createCircle(world, x, y, radius, false);
-//		ball.setBullet(true);
-//		ball.setLinearVelocity(new Vector2(velocity.get(0), velocity.get(1)));
-//		this.balls.add(ball);
-//		return ball;
-//	}
 	
 	private void SetUpBalls()
 	{
 		for(float x = 0; x <20; x+=layout.getBallRadius()){
-			Ball b = new Ball(x, 10);
-			flock.addBall(b);
+		
+				Ball b = new Ball(x, 10);
+				flock.addBall(b);
+			
+			
 		}
 	}
 
-	/** Removes a ball from play. If this results in no balls remaining on the field, calls doBallLost. */
-	public void removeBall (Body ball) {
-		world.destroyBody(ball);
-		this.balls.remove(ball);
-		if (this.balls.size() == 0) {
-			this.doBallLost();
-		}
-	}
-
-	/** Called when a ball has ended. Ends the game if that was the last ball, otherwise updates GameState to the next ball. Shows a
-	 * game message to indicate the ball number or game over. */
-	public void doBallLost () {
-		boolean hasExtraBall = (this.gameState.getExtraBalls() > 0);
-		this.gameState.doNextBall();
-		// display message for next ball or game over
-		String msg = null;
-		if (hasExtraBall)
-			msg = "Shoot Again";
-		else if (this.gameState.isGameInProgress()) msg = "Ball " + this.gameState.getBallNumber();
-
-		if (msg != null) {
-			// game is still going, show message after delay
-			final String msg2 = msg; // must be final for closure, yay Java
-			this.scheduleAction(1500, new Runnable() {
-				public void run () {
-					showGameMessage(msg2, 1500);
-				}
-			});
-		} else {
-			endGame();
-		}
-
-		getDelegate().ballLost(this);
-	}
 
 	/** Returns true if there are active elements in motion. Returns false if there are no active elements, indicating that tick()
 	 * can be called with larger time steps, less frequently, or not at all. */
@@ -264,44 +218,8 @@ public class Field implements ContactListener {
 		return this.getBalls().size() > 0;
 	}
 
-	ArrayList<Body> deadBalls = new ArrayList<Body>();
 
-	/** Removes balls that are not in play, currently defined as those having a y position of less than 1. */
-	public void removeDeadBalls () {
-		int len = balls.size();
-		deadBalls.clear();
-		for (int i = 0; i < len; i++) {
-			Body ball = this.balls.get(i);
-			if (ball.getPosition().y < 1) {
-				world.destroyBody(ball);
-				deadBalls.add(ball);
-			}
-		}
 
-		len = deadBalls.size();
-		for (int i = 0; i < len; i++) {
-			this.balls.remove(deadBalls.get(i));
-		}
-	}
-
-	/** Called by FieldView to draw the balls currently in play. */
-	public void drawBalls (IFieldRenderer renderer) {
-		
-		
-	}
-
-	/** Ends a game in progress by removing all balls in play, calling setGameInProgress(false) on the GameState, and setting a
-	 * "Game Over" message for display by the score view. */
-	public void endGame () {
-		int len = balls.size();
-		for (int i = 0; i < len; i++) {
-			world.destroyBody(balls.get(i));
-		}
-		balls.clear();
-		this.getGameState().setGameInProgress(false);
-		this.showGameMessage("Game Over", 2500);
-		getDelegate().gameEnded(this);
-	}
 
 	/** Adjusts gravity in response to the device being tilted; not currently used. */
 	public void receivedOrientationValues (float azimuth, float pitch, float roll) {
@@ -321,13 +239,12 @@ public class Field implements ContactListener {
 
 	/** Called after Box2D world step method, to notify FieldElements that the ball collided with. */
 	void processBallContacts () {
-		for (int i = 0; i < balls.size(); i++) {
-			Body ball = balls.get(i);
+		for (int i = 0; i < flock.balls.size(); i++) {
+			Body ball = flock.balls.get(i).body;
 			if (ball.getUserData() == null) continue;
 
 			List<Fixture> fixtures = (List<Fixture>)ball.getUserData();
-			int len2 = fixtures.size();
-			for (int j = 0; j < len2; j++) {
+			for (int j = 0; j < fixtures.size(); j++) {
 				Fixture f = fixtures.get(j);
 				FieldElement element = bodyToFieldElement.get(f.getBody());
 				if (element != null) {
@@ -353,11 +270,12 @@ public class Field implements ContactListener {
 		// A ball can have multiple contacts (e.g. against two walls), so store list of contacted fixtures
 		Body ball = null;
 		Fixture fixture = null;
-		if (balls.contains(contact.getFixtureA().getBody())) {
+		if (flock.ballBodies.contains(contact.getFixtureA().getBody())) {
 			ball = contact.getFixtureA().getBody();
 			fixture = contact.getFixtureB();
 		}
-		if (balls.contains(contact.getFixtureB().getBody())) {
+		
+		if (flock.ballBodies.contains(contact.getFixtureB().getBody())) {
 			ball = contact.getFixtureB().getBody();
 			fixture = contact.getFixtureA();
 		}
@@ -394,6 +312,12 @@ public class Field implements ContactListener {
 			}
 		}
 	}
+	
+	public void removeBall(Body ball){
+		flock.removeBall(ball);
+		world.destroyBody(ball);
+		
+	}
 
 	/** Adds the given value to the game score. The value is multiplied by the GameState's current multipler. */
 	public void addScore (long s) {
@@ -414,7 +338,7 @@ public class Field implements ContactListener {
 	}
 
 	public List<Body> getBalls () {
-		return balls;
+		return (List)flock.balls;
 	}
 
 	public List<FlipperElement> getFlipperElements () {
