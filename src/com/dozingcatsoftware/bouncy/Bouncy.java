@@ -27,7 +27,7 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		field = new Field(cam);
 		field.resetForLevel(level);
 		Gdx.input.setInputProcessor(this);
-		//Gdx.graphics.setDisplayMode(1280, 720, true); Use this once I get all my own graphics
+		//Gdx.graphics.setDisplayMode(1280, 720, true);
 		
 	}
 
@@ -96,7 +96,6 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
 		field.removeDeadBalls();
-		field.launchBall();
 		return false;
 	}
 
