@@ -52,6 +52,13 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		renderer.setProjectionMatrix(cam.combined);
 
 		long startRender = TimeUtils.nanoTime();
+		renderer.begin();
+		int len = field.getFieldElements().size();
+		for (int i = 0; i < len; i++) {
+			FieldElement element = field.getFieldElements().get(i);
+			element.draw(renderer);
+		}
+		renderer.end();
 
 		renderer.begin();
 		field.drawBalls(renderer);
@@ -83,21 +90,19 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
 		field.removeDeadBalls();
-		//if (field.getBalls().size() != 0) field.setAllFlippersEngaged(true);
 		return false;
 	}
 
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
 		field.removeDeadBalls();
-		if (field.getBalls().size() == 0) field.launchBall();
-		//field.setAllFlippersEngaged(false);
+		field.launchBall();
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged (int x, int y, int pointer) {
-		//if (field.getBalls().size() != 0) field.setAllFlippersEngaged(true);
+		
 		return false;
 	}
 }

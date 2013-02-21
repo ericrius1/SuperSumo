@@ -6,14 +6,27 @@
 		
 		"delegate": "Field1Delegate",
 		"targetTimeRatio": 2.5,
-		"gravity": 4.0,
+		"gravity": 2.0,
 		
 		"numballs": 3,
 		"ballradius": 0.5,
 		"ballcolor": [192, 192, 224],
-		"launch": {"position": [19.4, 3.0], "velocity": [0, 15.4], "random_velocity": [0, 0.6]},
+		"launch": {"position": [19.4, 3.0], "velocity": [0, 0], "random_velocity": [0, 0]},
 		
-		
-        
+		"elements": [
+			"Strings in this section are treated as comments and ignored.",
+			"All field elements except for flippers are defined in this section.",
+			"Each element is a JSON object with a mandatory class property to indicate type",
+			"and type=specific additional attributes. The element classes are defined",
+			"in the com.dozingcatsoftware.bouncy.element package.", 
+			               	
+		    {"class": "WallElement", "position": [0.1, 1, 20, 1]},
+		 
+			
+	
+			
+			
+
+        ]
 	}	
 ]

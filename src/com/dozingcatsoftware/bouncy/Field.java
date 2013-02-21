@@ -100,7 +100,7 @@ public class Field implements ContactListener {
 	 * starting state.
 	 * @param level */
 	public void resetForLevel (int level) {
-		Vector2 gravity = new Vector2(0.0f, -1.0f);
+		Vector2 gravity = new Vector2(0.0f, 0.0f);
 		boolean doSleep = true;
 		world = new World(gravity, doSleep);
 		world.setContactListener(this);
@@ -118,36 +118,12 @@ public class Field implements ContactListener {
 		fieldElements = new HashMap<String, FieldElement>();
 		List<FieldElement> tickElements = new ArrayList<FieldElement>();
 
-//		for (FieldElement element : layout.getFieldElements()) {
-//			if (element.getElementID() != null) {
-//				fieldElements.put(element.getElementID(), element);
-//			}
-//			for (Body body : element.getBodies()) {
-//				bodyToFieldElement.put(body, element);
-//			}
-//			if (element.shouldCallTick()) {
-//				tickElements.add(element);
-//			}
-//		}
+
 		fieldElementsToTick = tickElements.toArray(new FieldElement[0]);
 
 		delegate = new Field1Delegate();
-// String delegateClass = layout.getDelegateClassName();
-// if (delegateClass != null) {
-// if (delegateClass.indexOf('.') == -1) {
-// delegateClass = "com.dozingcatsoftware.bouncy.fields." + delegateClass;
-// }
-// try {
-// delegate = (Delegate)Class.forName(delegateClass).newInstance();
-// } catch (Exception ex) {
-// throw new RuntimeException(ex);
-// }
-// } else {
-// // use no-op delegate if no class specified, so that field.getDelegate() is always non-null
-// delegate = new BaseFieldDelegate();
-// }
 	}
-
+	
 	public void startGame () {
 		gameState.setTotalBalls(layout.getNumberOfBalls());
 		gameState.startNewGame();
@@ -210,11 +186,10 @@ public class Field implements ContactListener {
 
 	/** Launches a new ball. The position and velocity of the ball are controlled by the "launch" key in the field layout JSON. */
 	public Body launchBall () {
-		List<Number> position = layout.getLaunchPosition();
 		List<Float> velocity = layout.getLaunchVelocity();
 		float radius = layout.getBallRadius();
 
-		Body ball = Box2DFactory.createCircle(world, position.get(0).floatValue(), position.get(1).floatValue(), radius, false);
+		Body ball = Box2DFactory.createCircle(world, RAND.nextFloat()*10, RAND.nextFloat()*40, radius, false);
 		ball.setBullet(true);
 		ball.setLinearVelocity(new Vector2(velocity.get(0), velocity.get(1)));
 		this.balls.add(ball);
@@ -291,9 +266,9 @@ public class Field implements ContactListener {
 		int len = balls.size();
 		for (int i = 0; i < len; i++) {
 			Body ball = balls.get(i);
-			if(Gdx.input.isTouched()){
-				cam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-				ball.setTransform(touchPoint.x, touchPoint.y, 0);
+			if(Gdx.input.justTouched()){
+				//Vector3 toucPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
+				//ball.setTransform(touchPoint.x, touchPoint.y, 0);
 			}
 			CircleShape shape = (CircleShape)ball.getFixtureList().get(0).getShape();
 			renderer.fillCircle(ball.getPosition().x, ball.getPosition().y, shape.getRadius(), color.get(0), color.get(1),
@@ -301,22 +276,7 @@ public class Field implements ContactListener {
 		}
 	}
 
-	/** Called to engage or disengage all flippers. If called with an argument of true, and all flippers were not previously
-	 * engaged, calls the flipperActivated methods of all field elements and the field's delegate. */
-	public void setAllFlippersEngaged (boolean engaged) {
-		boolean allFlippersPreviouslyActive = true;
-		for (FlipperElement flipper : this.getFlipperElements()) {
-			if (allFlippersPreviouslyActive && !flipper.isFlipperEngaged()) allFlippersPreviouslyActive = false;
-			flipper.setFlipperEngaged(engaged);
-		}
 
-		if (engaged && !allFlippersPreviouslyActive) {
-			for (FieldElement element : this.getFieldElements()) {
-				element.flipperActivated(this);
-			}
-			getDelegate().flipperActivated(this);
-		}
-	}
 
 	/** Ends a game in progress by removing all balls in play, calling setGameInProgress(false) on the GameState, and setting a
 	 * "Game Over" message for display by the score view. */
@@ -397,6 +357,11 @@ public class Field implements ContactListener {
 			}
 			fixtures.add(fixture);
 		}
+	}
+	
+	private Vector3 screenToViewport (float x, float y) {
+		cam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+		return touchPoint;
 	}
 
 	// end ContactListener methods
