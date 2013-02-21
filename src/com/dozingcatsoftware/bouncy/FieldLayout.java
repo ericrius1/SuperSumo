@@ -89,10 +89,6 @@ public class FieldLayout {
 		this.targetTimeRatio = asFloat(layoutMap.get("targetTimeRatio"));
 		this.ballColor = (layoutMap.containsKey("ballcolor")) ? (List<Integer>)layoutMap.get("ballcolor") : DEFAULT_BALL_COLOR;
 		this.allParameters = layoutMap;
-
-		flippers = addFieldElements(layoutMap, "flippers", FlipperElement.class, world);
-
-		addFieldElements(layoutMap, "elements", null, world);
 	}
 
 	public List<FieldElement> getFieldElements () {

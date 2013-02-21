@@ -33,6 +33,8 @@ public class Field implements ContactListener {
 	FieldLayout layout;
 	World world;
 	Camera cam;
+	
+	Vector3 touchPoint;
 
 	List<Body> layoutBodies;
 	List<Body> balls;
@@ -90,6 +92,7 @@ public class Field implements ContactListener {
 	public Field(Camera cam)
 	{
 		this.cam = cam;
+		touchPoint = new Vector3();
 	
 	}
 
@@ -115,17 +118,17 @@ public class Field implements ContactListener {
 		fieldElements = new HashMap<String, FieldElement>();
 		List<FieldElement> tickElements = new ArrayList<FieldElement>();
 
-		for (FieldElement element : layout.getFieldElements()) {
-			if (element.getElementID() != null) {
-				fieldElements.put(element.getElementID(), element);
-			}
-			for (Body body : element.getBodies()) {
-				bodyToFieldElement.put(body, element);
-			}
-			if (element.shouldCallTick()) {
-				tickElements.add(element);
-			}
-		}
+//		for (FieldElement element : layout.getFieldElements()) {
+//			if (element.getElementID() != null) {
+//				fieldElements.put(element.getElementID(), element);
+//			}
+//			for (Body body : element.getBodies()) {
+//				bodyToFieldElement.put(body, element);
+//			}
+//			if (element.shouldCallTick()) {
+//				tickElements.add(element);
+//			}
+//		}
 		fieldElementsToTick = tickElements.toArray(new FieldElement[0]);
 
 		delegate = new Field1Delegate();
@@ -289,10 +292,8 @@ public class Field implements ContactListener {
 		for (int i = 0; i < len; i++) {
 			Body ball = balls.get(i);
 			if(Gdx.input.isTouched()){
-				Vector3 tempPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-				cam.unproject(tempPos);
-				Vector2 newPos = new Vector2(tempPos.x, tempPos.y);
-				ball.setTransform(newPos.x, newPos.y, ball.getAngle());
+				cam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+				ball.setTransform(touchPoint.x, touchPoint.y, 0);
 			}
 			CircleShape shape = (CircleShape)ball.getFixtureList().get(0).getShape();
 			renderer.fillCircle(ball.getPosition().x, ball.getPosition().y, shape.getRadius(), color.get(0), color.get(1),
