@@ -33,6 +33,8 @@ public class Field implements ContactListener {
 	FieldLayout layout;
    static World world;
 	Camera cam;
+	
+
 
 	Vector3 touchPoint;
 
@@ -45,6 +47,9 @@ public class Field implements ContactListener {
 	FieldElement[] fieldElementsToTick;
 
 	Random RAND = new Random();
+	
+	public static float width;
+	public static float height;
 	
 	Flock flock;
 
@@ -107,6 +112,8 @@ public class Field implements ContactListener {
 		flock = new Flock();
 
 		layout = FieldLayout.layoutForLevel(level, world);
+		width = layout.getWidth();
+		height = layout.getHeight();
 		world.setGravity(new Vector2(0.0f, -layout.getGravity()));
 
 		scheduledActions = new PriorityQueue<ScheduledAction>();
