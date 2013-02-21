@@ -24,7 +24,7 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 	public void create () {
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		renderer = new GLFieldRenderer();
-		field = new Field();
+		field = new Field(cam);
 		field.resetForLevel(level);
 		Gdx.input.setInputProcessor(this);
 	}

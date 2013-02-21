@@ -9,7 +9,9 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -30,6 +32,7 @@ public class Field implements ContactListener {
 
 	FieldLayout layout;
 	World world;
+	Camera cam;
 
 	List<Body> layoutBodies;
 	List<Body> balls;
@@ -82,6 +85,12 @@ public class Field implements ContactListener {
 			// sort by action time so these objects can be added to a PriorityQueue in the right order
 			return actionTime.compareTo(another.actionTime);
 		}
+	}
+	
+	public Field(Camera cam)
+	{
+		this.cam = cam;
+	
 	}
 
 	/** Creates Box2D world, reads layout definitions for the given level (currently only one), and initializes the game to the
@@ -280,7 +289,10 @@ public class Field implements ContactListener {
 		for (int i = 0; i < len; i++) {
 			Body ball = balls.get(i);
 			if(Gdx.input.isTouched()){
-				ball.setTransform(Gdx.input.getX(), Gdx.input.getY(), ball.getAngle());
+				Vector3 tempPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+				cam.unproject(tempPos);
+				Vector2 newPos = new Vector2(tempPos.x, tempPos.y);
+				ball.setTransform(newPos.x, newPos.y, ball.getAngle());
 			}
 			CircleShape shape = (CircleShape)ball.getFixtureList().get(0).getShape();
 			renderer.fillCircle(ball.getPosition().x, ball.getPosition().y, shape.getRadius(), color.get(0), color.get(1),
