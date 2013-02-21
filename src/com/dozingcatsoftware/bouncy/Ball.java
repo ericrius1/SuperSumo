@@ -22,12 +22,17 @@ public class Ball {
 	private Vector2 acceleration;
 	private Vector2 sum;
 	private Vector2 desired;
+	private Vector2 worldTarget;
+	private ScreenTranslationUtils screenUtil;;
+	private Vector2 bodyVector;
+	Vector2 screenPosition;
 	
 	
 	public Ball(float x, float y){
 	   RAND = new Random();
 		radius = 0.4f;
-		velocity = new Vector2((-1 + RAND.nextFloat()*2), (-1 + RAND.nextFloat()*2));
+		//velocity = new Vector2((-1 + RAND.nextFloat()*2), (-1 + RAND.nextFloat()*2));
+		velocity = new Vector2(0, 0);
 		id = count;
 		maxspeed = 0.05f;
 		maxforce = 0.01f;
@@ -37,19 +42,33 @@ public class Ball {
 		body.setLinearVelocity(velocity);
 		acceleration = new Vector2(0, 0);
 		
+		screenUtil = new ScreenTranslationUtils(10);
 		count++;
 	}
 	
 	void applyForce(Vector2 force){
-		acceleration.add(force);
+		//acceleration.add(force);
 		
 	}
 	
+	  void attract(float x, float y){
+		  //worldTarget = screenUtil.coordPixelsToWorld(x , y);
+		  worldTarget = new Vector2(x, y);
+		  //first find the vector going from this body to the specified point
+		  bodyVector = body.getWorldCenter();
+		  worldTarget = worldTarget.sub(bodyVector);
+		  //Then scale vector to specified force
+		  worldTarget = worldTarget.nor();
+		  worldTarget = worldTarget.mul(50.0f);
+		  //Now apply it to the body's center of mass
+		  body.applyForce(worldTarget, bodyVector);
+	  }
+	
 	   void flock(ArrayList<Ball> balls){
-		Vector2 cohesion = cohesion(balls);
-		cohesion = cohesion.mul(1.5f);
+		//Vector2 cohesion = cohesion(balls);
+		//cohesion = cohesion.mul(1.5f);
 		//Add the force vectors to acceleration
-		applyForce(cohesion);
+		//applyForce(cohesion);
 		
 	}
 	
@@ -61,6 +80,7 @@ public class Ball {
 			float d = sum.dst(other.body.getPosition());
 			if((d> 0) && (d < neighbordist)) {
 				sum.add(other.body.getPosition());
+				
 			}
 		}
 		
@@ -108,6 +128,8 @@ public class Ball {
 	}
 	
 	private void render(GLFieldRenderer renderer){
+		
+		screenPosition = screenUtil.getBodyPixelCoord(body);
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 200, 50, 200);
 	}

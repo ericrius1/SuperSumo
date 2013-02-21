@@ -30,8 +30,8 @@ import com.dozingcatsoftware.bouncy.fields.Field1Delegate;
 
 public class Field implements ContactListener {
 
-	FieldLayout layout;
-   static World world;
+	static FieldLayout layout;
+   public static World world;
 	Camera cam;
 	
 
@@ -109,7 +109,7 @@ public class Field implements ContactListener {
 		touchPoint = new Vector3();
 		world = new World(gravity, doSleep);
 		world.setContactListener(this);
-		flock = new Flock();
+		flock = new Flock( cam);
 
 		layout = FieldLayout.layoutForLevel(level, world);
 		width = layout.getWidth();
@@ -295,10 +295,7 @@ public class Field implements ContactListener {
 		}
 	}
 
-	private Vector3 screenToViewport (float x, float y) {
-		cam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-		return touchPoint;
-	}
+
 
 	// end ContactListener methods
 
