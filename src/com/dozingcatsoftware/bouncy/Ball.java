@@ -34,8 +34,8 @@ public class Ball {
 		//velocity = new Vector2((-1 + RAND.nextFloat()*2), (-1 + RAND.nextFloat()*2));
 		velocity = new Vector2(0, 0);
 		id = count;
-		maxspeed = 0.05f;
-		maxforce = 0.01f;
+		maxspeed = 0.5f;
+		maxforce = 0.1f;
 		
 		body = Box2DFactory.createCircle(Field.world, x, y, radius, false);
 		body.setBullet(true);

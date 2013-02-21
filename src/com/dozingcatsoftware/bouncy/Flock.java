@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -20,6 +21,7 @@ public class Flock {
 		balls = new ArrayList<Ball>();
 		ballBodies = new ArrayList<Body>();
 		this.cam = cam;
+		touchPoint = new Vector3();
 	}
 	
 	void addBall(Ball b){
@@ -33,8 +35,9 @@ public class Flock {
 		}
 		
 		if(Gdx.input.isTouched()) {
+			worldPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
 			for(Ball b : balls){
-				b.attract(Gdx.input.getX(), Gdx.input.getY());
+				b.attract(worldPoint.x, worldPoint.y);
 			}
 		}
 	}
