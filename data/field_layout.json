@@ -6,7 +6,7 @@
 		
 		"delegate": "Field1Delegate",
 		"targetTimeRatio": 2.5,
-		"gravity": 0.1,
+		"gravity": 0.0,
 		
 	
 		"ballradius": 0.5,
@@ -20,10 +20,10 @@
 			"and type=specific additional attributes. The element classes are defined",
 			"in the com.dozingcatsoftware.bouncy.element package.", 
 			               	
-		    {"class": "WallElement", "position": [0.0, 0.0, 20, 0.0],},
+		    
 			{"class": "WallElement", "position": [0.0, 0.0, 0.0, 30.0]},
 			{"class": "WallElement", "position": [20.0, 0.0, 20.0, 30.0]},
-			{"class": "WallElement", "position": [0.0,30.0, 20.0, 30.0]},
+			
 	
 			
 			

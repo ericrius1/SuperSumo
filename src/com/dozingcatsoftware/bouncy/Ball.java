@@ -31,15 +31,10 @@ public class Ball {
 	public Ball(float x, float y){
 	   RAND = new Random();
 		radius = 0.4f;
-		//velocity = new Vector2((-1 + RAND.nextFloat()*2), (-1 + RAND.nextFloat()*2));
-		velocity = new Vector2(0, 0);
 		id = count;
-		maxspeed = 1.0f;
-		maxforce = 0.01f;
-		
+
 		body = Box2DFactory.createCircle(Field.world, x, y, radius, false);
 		body.setBullet(true);
-		body.setLinearVelocity(velocity);
 		acceleration = new Vector2(0, 0);
 		
 		screenUtil = new ScreenTranslationUtils(10);
@@ -47,10 +42,9 @@ public class Ball {
 	}
 	
 	void applyForce(Vector2 force){
-		//acceleration.add(force);
-		
+		body.applyForce(force, body.getWorldCenter());
 	}
-	
+
 	  void attract(float x, float y){
 		  //worldTarget = screenUtil.coordPixelsToWorld(x , y);
 		  worldTarget = new Vector2(x, y);
@@ -59,31 +53,44 @@ public class Ball {
 		  worldTarget = worldTarget.sub(bodyVector);
 		  //Then scale vector to specified force
 		  worldTarget = worldTarget.nor();
-		  worldTarget = worldTarget.mul(1.0f);
+		  worldTarget = worldTarget.mul(10.0f);
 		  //Now apply it to the body's center of mass
-		  body.applyForce(worldTarget, bodyVector);
+		  applyForce(worldTarget);
 	  }
-	
-	   void flock(ArrayList<Ball> balls){
-		//Vector2 cohesion = cohesion(balls);
-		//cohesion = cohesion.mul(1.5f);
-		//Add the force vectors to acceleration
-		//applyForce(cohesion);
 		
+		Vector2 seek(Vector2 target){
+			desired = target.sub(body.getWorldCenter());
+			desired = desired.nor();
+			desired = desired.mul(maxspeed);
+			//System.out.println(desired);
+			//desired = body.getLinearVelocity().sub(desired);
+			desired = desired.sub(body.getLinearVelocity());
+			System.out.println(desired);
+			// = limit(desired, maxforce);
+			return desired;
+		}
+		
+	  
+	  void flock(ArrayList<Ball> balls){
+		Vector2 cohesion = cohesion(balls);
+		cohesion = cohesion.mul(2.0f);
+		
+	   //Add the force vectors to acceleration
+		applyForce(cohesion);
 	}
 	
 	Vector2 cohesion(ArrayList<Ball> balls){
-		float neighbordist = 2;
+		float neighbordist = 200;
 		sum = new Vector2(0, 0);
 		int count = 0;
 		for(Ball other: balls){
-			float d = sum.dst(other.body.getPosition());
+			float d = sum.dst(other.body.getWorldCenter());
 			if((d> 0) && (d < neighbordist)) {
-				sum.add(other.body.getPosition());
+				sum.add(other.body.getWorldCenter());
+				count++;
 				
 			}
 		}
-		
 		if(count > 0){
 			return seek(sum.div(count));
 		}
@@ -91,17 +98,7 @@ public class Ball {
 			return new Vector2(0, 0);
 		}
 	}
-	
-	Vector2 seek(Vector2 target){
-		desired = target.sub(body.getPosition());
-		desired = desired.nor();
-		desired = desired.mul(maxspeed);
-		//desired = body.getLinearVelocity().sub(desired);
-		desired = desired.sub(body.getLinearVelocity());
-		limit(desired, maxforce);
-		return desired;
-	}
-	
+
 	void run(ArrayList<Ball> balls, GLFieldRenderer renderer){
 		flock(balls);
 		update();
@@ -110,10 +107,7 @@ public class Ball {
 	}
 	
 	void update(){
-		//update velocity and limit it to max speed
-		body.setLinearVelocity(limit(body.getLinearVelocity().add(acceleration), maxspeed));
-		body.setTransform(body.getPosition().add(body.getLinearVelocity()), body.getAngle());
-		acceleration = acceleration.mul(0.0f);
+
 		
 	}
 	
@@ -128,7 +122,6 @@ public class Ball {
 	}
 	
 	private void render(GLFieldRenderer renderer){
-		
 		screenPosition = screenUtil.getBodyPixelCoord(body);
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 200, 50, 200);

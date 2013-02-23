@@ -159,10 +159,10 @@ public class Field implements ContactListener {
 	void tick (long msecs, int iters) {
 		float dt = (msecs / 1000.0f) / iters;
 
-		for (int i = 0; i < iters+10; i++) {
-			clearBallContacts();
+		for (int i = 0; i < iters; i++) {
+			//clearBallContacts();
 			world.step(dt, 10, 10);
-			processBallContacts();
+			//processBallContacts();
 			
 		}
 
@@ -204,12 +204,18 @@ public class Field implements ContactListener {
 	}
 
 	
+	//**************************SET UP BALLLLLSSSSS********************************************************
+	
+	
+	
 	private void SetUpBalls()
 	{
-		for(float x = 0; x <20; x+=layout.getBallRadius()){
+		for(float x = 0; x <20; x++){
+			for(float y= 25; y > 24; y--){
 		
-				Ball b = new Ball(x, 10);
+				Ball b = new Ball(x, y);
 				flock.addBall(b);
+			}
 		}
 	}
 
