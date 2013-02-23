@@ -6,7 +6,7 @@
 		
 		"delegate": "Field1Delegate",
 		"targetTimeRatio": 2.5,
-		"gravity": 1.0,
+		"gravity": 0.0,
 		
 	
 		"ballradius": 0.5,

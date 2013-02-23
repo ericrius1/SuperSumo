@@ -15,23 +15,27 @@ public class Ball {
 	public int id;
 	Vector2 velocity;
 	Random RAND;
-	private float radius;
-	private float maxforce;
+	private float radius = 0.4f;
 	private Vector2 acceleration;
 	private Vector2 sum;
 	private Vector2 desired;
-	private Vector2 worldTarget;
+	private Vector2 steer;
+	private Vector2 difference;
+	Vector2 worldTarget;
 	private ScreenTranslationUtils screenUtil;;
 	private Vector2 bodyVector;
 	Vector2 screenPosition;
+	private Vector2 tempPosVector;
+	private Vector2 tempOtherPosVector;
 	private float mouseForceMultiplier = 10.0f;
 	private float neighborDist = 2.0f;
 	private float cohesionMultiplier = 1.0f;
 	private float maxspeed = 10.0f;
+	float desiredSeparation = 1.0f;
+	float maxforce = 1.0f;
 
 	public Ball (float x, float y) {
 		RAND = new Random();
-		radius = 0.4f;
 		body = Box2DFactory.createCircle(Field.world, x, y, radius, false);
 		body.setBullet(true);
 		acceleration = new Vector2(0, 0);
@@ -51,18 +55,48 @@ public class Ball {
 	}
 
 	void flock (ArrayList<Ball> balls) {
-		Vector2 cohesion = cohesion(balls);
-		cohesion = cohesion.mul(cohesionMultiplier);
-		applyForce(cohesion);
+		// Vector2 cohesion = cohesion(balls);
+		Vector2 separation = separation(balls);
+		// cohesion = cohesion.mul(cohesionMultiplier);
+		separation = separation.mul(cohesionMultiplier);
+		// applyForce(cohesion);
+		applyForce(separation);
+
 	}
 
 	Vector2 seek (Vector2 target) {
 		desired = target.sub(body.getWorldCenter());
-		desired = desired.nor();
-		desired = desired.mul(maxspeed);
-		desired = desired.sub(body.getLinearVelocity());
+		desired.nor();
+		desired.mul(maxspeed);
+		desired.sub(body.getLinearVelocity());
+		// body.getLinearVelocity().sub(body.getWorldCenter());
 		System.out.println(desired);
+		desired = limit(desired, maxforce);
 		return desired;
+	}
+
+	Vector2 separation (ArrayList<Ball> balls) {
+		steer = new Vector2(0, 0);
+		int count = 0;
+		tempPosVector = new Vector2(body.getWorldCenter().x, body.getWorldCenter().y);
+		// For every ball in system, check if it's too close
+		for (Ball other : balls) {
+			float d = body.getWorldCenter().dst(other.body.getWorldCenter());
+			if ((d > 0) && (d < desiredSeparation)) {
+				tempOtherPosVector = new Vector2(other.body.getWorldCenter().x, other.body.getWorldCenter().y);
+				difference = tempPosVector.sub(tempOtherPosVector);
+				difference.nor();
+				// difference.div(d); // weight by distance
+				steer.add(difference);
+				count++;
+			}
+		}
+		// Average - divide by how many
+		if (count > 0) {
+			return seek((steer.div((float)count)));
+		}
+		return steer;
+
 	}
 
 	Vector2 cohesion (ArrayList<Ball> balls) {
@@ -77,18 +111,16 @@ public class Ball {
 			}
 		}
 		if (count > 0) {
-			return seek(sum.div(count));
-		} else {
-			return new Vector2(0, 0);
+			return seek(sum.div((float)count));
 		}
+		return sum;
 	}
 
 	void attract (float x, float y) {
 		// worldTarget = screenUtil.coordPixelsToWorld(x , y);
 		worldTarget = new Vector2(x, y);
 		// first find the vector going from this body to the specified point
-		bodyVector = body.getWorldCenter();
-		worldTarget = worldTarget.sub(bodyVector);
+		worldTarget = worldTarget.sub(body.getWorldCenter());
 		// Then scale vector to specified force
 		worldTarget = worldTarget.nor();
 		worldTarget = worldTarget.mul(mouseForceMultiplier);

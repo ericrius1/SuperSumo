@@ -30,7 +30,7 @@ public class Field implements ContactListener {
 	static FieldLayout layout;
 	public static World world;
 	Camera cam;
-	int numBalls = 4;
+	int numBalls = 20;
 	float gravity;
 
 	Vector3 touchPoint;
@@ -202,7 +202,7 @@ public class Field implements ContactListener {
 	// **************************SET UP BALLLLLSSSSS********************************************************
 
 	private void SetUpBalls () {
-		for (float x = 0; x < layout.getWidth(); x += layout.getWidth() / numBalls) {
+		for (float x = layout.getWidth(); x > 0; x -= layout.getWidth() / numBalls) {
 
 			Ball b = new Ball(x + 2, RAND.nextFloat() * 20.0f + 2);
 			flock.addBall(b);
