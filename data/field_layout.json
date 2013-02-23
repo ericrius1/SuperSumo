@@ -6,13 +6,12 @@
 		
 		"delegate": "Field1Delegate",
 		"targetTimeRatio": 2.5,
-		"gravity": 0.0,
+		"gravity": 1.0,
 		
 	
 		"ballradius": 0.5,
 		"ballcolor": [192, 192, 224],
-		"launch": {"position": [19.4, 3.0], "velocity": [0, 0], "random_velocity": [0, 0]},
-		
+
 		"elements": [
 			"Strings in this section are treated as comments and ignored.",
 			"All field elements except for flippers are defined in this section.",

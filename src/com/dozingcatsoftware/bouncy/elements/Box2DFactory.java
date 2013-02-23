@@ -22,7 +22,7 @@ public class Box2DFactory {
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = sd;
 		fdef.density = 1.0f;
-		fdef.friction = 0.3f;
+		fdef.friction = 0.0f;
 		fdef.restitution = 0.6f;
 
 		BodyDef bd = new BodyDef();

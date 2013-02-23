@@ -8,19 +8,16 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.dozingcatsoftware.bouncy.elements.Box2DFactory;
 import com.dozingcatsoftware.bouncy.elements.DropTargetGroupElement;
 import com.dozingcatsoftware.bouncy.elements.FieldElement;
 import com.dozingcatsoftware.bouncy.elements.FlipperElement;
@@ -31,10 +28,10 @@ import com.dozingcatsoftware.bouncy.fields.Field1Delegate;
 public class Field implements ContactListener {
 
 	static FieldLayout layout;
-   public static World world;
+	public static World world;
 	Camera cam;
-	
-
+	int numBalls = 4;
+	float gravity;
 
 	Vector3 touchPoint;
 
@@ -47,10 +44,10 @@ public class Field implements ContactListener {
 	FieldElement[] fieldElementsToTick;
 
 	Random RAND = new Random();
-	
+
 	public static float width;
 	public static float height;
-	
+
 	Flock flock;
 
 	long gameTime;
@@ -96,7 +93,6 @@ public class Field implements ContactListener {
 
 	public Field (Camera cam) {
 		this.cam = cam;
-		
 
 	}
 
@@ -109,7 +105,7 @@ public class Field implements ContactListener {
 		touchPoint = new Vector3();
 		world = new World(gravity, doSleep);
 		world.setContactListener(this);
-		flock = new Flock( cam);
+		flock = new Flock(cam);
 
 		layout = FieldLayout.layoutForLevel(level, world);
 		width = layout.getWidth();
@@ -138,7 +134,7 @@ public class Field implements ContactListener {
 		fieldElementsToTick = tickElements.toArray(new FieldElement[0]);
 
 		delegate = new Field1Delegate();
-		
+
 		SetUpBalls();
 	}
 
@@ -160,10 +156,10 @@ public class Field implements ContactListener {
 		float dt = (msecs / 1000.0f) / iters;
 
 		for (int i = 0; i < iters; i++) {
-			//clearBallContacts();
+			// clearBallContacts();
 			world.step(dt, 10, 10);
-			//processBallContacts();
-			
+			// processBallContacts();
+
 		}
 
 		gameTime += msecs;
@@ -203,22 +199,16 @@ public class Field implements ContactListener {
 		scheduledActions.add(sa);
 	}
 
-	
-	//**************************SET UP BALLLLLSSSSS********************************************************
-	
-	
-	
-	private void SetUpBalls()
-	{
-		for(float x = 0; x <20; x++){
-			for(float y= 25; y > 24; y--){
-		
-				Ball b = new Ball(x, y);
-				flock.addBall(b);
-			}
+	// **************************SET UP BALLLLLSSSSS********************************************************
+
+	private void SetUpBalls () {
+		for (float x = 0; x < layout.getWidth(); x += layout.getWidth() / numBalls) {
+
+			Ball b = new Ball(x + 2, RAND.nextFloat() * 20.0f + 2);
+			flock.addBall(b);
+
 		}
 	}
-
 
 	/** Returns true if there are active elements in motion. Returns false if there are no active elements, indicating that tick()
 	 * can be called with larger time steps, less frequently, or not at all. */
@@ -228,9 +218,6 @@ public class Field implements ContactListener {
 		// allow delegate to return true even if there are no balls?
 		return this.getBalls().size() > 0;
 	}
-
-
-
 
 	/** Adjusts gravity in response to the device being tilted; not currently used. */
 	public void receivedOrientationValues (float azimuth, float pitch, float roll) {
@@ -285,7 +272,7 @@ public class Field implements ContactListener {
 			ball = contact.getFixtureA().getBody();
 			fixture = contact.getFixtureB();
 		}
-		
+
 		if (flock.ballBodies.contains(contact.getFixtureB().getBody())) {
 			ball = contact.getFixtureB().getBody();
 			fixture = contact.getFixtureA();
@@ -298,8 +285,6 @@ public class Field implements ContactListener {
 			fixtures.add(fixture);
 		}
 	}
-
-
 
 	// end ContactListener methods
 
@@ -320,11 +305,11 @@ public class Field implements ContactListener {
 			}
 		}
 	}
-	
-	public void removeBall(Body ball){
+
+	public void removeBall (Body ball) {
 		flock.removeBall(ball);
 		world.destroyBody(ball);
-		
+
 	}
 
 	/** Adds the given value to the game score. The value is multiplied by the GameState's current multipler. */
