@@ -18,13 +18,14 @@ public class Player {
 	private static final int REGION_ROWS = 4;
 	private Texture playerTexture;
 	private float currentFrame = 0;
-	// private float xSpeed = 20.0f;
-	// private float ySpeed = 0.0f;
+	private float xSpeed = 0.0f;
+	private float ySpeed = 0.0f;
 	static final float FRAME_RATE = 5;
 	private float centerScreenY;
 	float screenHeight;
 	float screenWidth;
 	float touchRange;
+	private Vector2 bodyPrevPosition;
 	Body body;
 	ScreenTranslationUtils screenUtils;
 	Vector2 worldTarget;
@@ -53,11 +54,12 @@ public class Player {
 		box2dW = screenUtils.scalarPixelsToWorld(width / 2);
 		body = Box2DFactory.createCircle(Field.world, 10, 20, box2dW, false, density);
 		body.setBullet(true);
+		bodyPrevPosition = body.getPosition();
 	}
 
 	public void render () {
 		int srcX = (int)currentFrame * width;
-		int srcY = getAnimationRow() * height;
+		int srcY = (getAnimationRow()) * height;
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		Bouncy.renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 50, 200, 20);
 		batch.begin();
@@ -70,20 +72,16 @@ public class Player {
 			float screenY = ScreenTranslationUtils.map(Gdx.input.getY(), screenHeight, 0, 0, screenHeight);
 			worldPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
 			attract(worldPoint.x, worldPoint.y);
-			if (isCollision(Gdx.input.getX(), screenY)) {
-
-				// spritePosition.set(Gdx.input.getX(), screenY);
-			}
 		}
 	}
 
 	public void update (float deltaTime) {
 
-// xSpeed = (spritePosition.x - spritePreviousPosition.x) / deltaTime;
-// ySpeed = (spritePreviousPosition.y - spritePosition.y) / deltaTime;
-
-		// spritePreviousPosition = new Vector2(spritePosition.x, spritePosition.y);
-
+		xSpeed = (body.getPosition().x - bodyPrevPosition.x) / deltaTime;
+		ySpeed = (bodyPrevPosition.y - body.getPosition().y) / deltaTime;
+		System.out.println("x Pos : " + body.getPosition().x);
+		System.out.println("x Previous Pos : " + bodyPrevPosition.x);
+		bodyPrevPosition = new Vector2(body.getPosition().x, body.getPosition().y);
 		// current frame = ++ currentFrame % 3
 		currentFrame += FRAME_RATE * deltaTime;
 		// use this to keep precision of where we are since deltaTime is a float
@@ -114,17 +112,9 @@ public class Player {
 	}
 
 	private int getAnimationRow () {
-		// double dirDouble = (Math.atan2(xSpeed, ySpeed) / (Math.PI / 2) + 2);
-		// int direction = (int)Math.round(dirDouble) % REGION_ROWS;
-		// return DIRECTION_TO_ANIMATION_MAP[direction];
-		return 1;
-	}
-
-	private boolean isCollision (float x2, float y2) {
-
-		// return (Math.abs(x2 - spritePosition.x) < touchRange && Math.abs(spritePosition.y - y2) < touchRange);
-		return true;
-
+		double dirDouble = (Math.atan2(xSpeed, ySpeed) / (Math.PI / 2) + 2);
+		int direction = (int)Math.round(dirDouble) % REGION_ROWS;
+		return DIRECTION_TO_ANIMATION_MAP[direction];
 	}
 
 	public Vector3 screenToViewport (float x, float y) {
