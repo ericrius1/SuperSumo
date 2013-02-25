@@ -22,6 +22,8 @@
 		    
 			{"class": "WallElement", "position": [0.0, 0.0, 0.0, 30.0]},
 			{"class": "WallElement", "position": [20.0, 0.0, 20.0, 30.0]},
+			{"class": "WallElement", "position": [0.0, 0.0, 30, 0]},
+			{"class": "WallElement", "position": [0, 30.0, 20.0, 30.0]},
 			
 	
 			

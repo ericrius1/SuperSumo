@@ -1,6 +1,9 @@
 
 package com.dozingcatsoftware.bouncy.elements;
 
+import static com.dozingcatsoftware.bouncy.util.MathUtils.asFloat;
+import static com.dozingcatsoftware.bouncy.util.MathUtils.toRadians;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -14,8 +17,6 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.dozingcatsoftware.bouncy.Field;
 import com.dozingcatsoftware.bouncy.IFieldRenderer;
-
-import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
 /** FieldElement subclass for a flipper that is controlled by the player. A flipper consists of a Box2D RevoluteJoint where a thin
  * wall rotates around an invisible anchor. Flippers are defined in the layout JSON as follows: { "class": "FlipperElement",
@@ -51,7 +52,7 @@ public class FlipperElement extends FieldElement {
 		this.upspeed = asFloat(params.get("upspeed"));
 		this.downspeed = asFloat(params.get("downspeed"));
 
-		this.anchorBody = Box2DFactory.createCircle(world, this.cx, this.cy, 0.05f, true);
+		this.anchorBody = Box2DFactory.createCircle(world, this.cx, this.cy, 0.05f, true, 1);
 		// joint angle is 0 when flipper is horizontal
 		// flipper needs to be slightly extended past anchorBody to rotate correctly
 		float ext = (this.flipperLength > 0) ? -0.05f : +0.05f;

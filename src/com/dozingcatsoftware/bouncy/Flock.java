@@ -30,10 +30,10 @@ public class Flock {
 
 	void run (GLFieldRenderer renderer) {
 		for (Ball b : balls) {
-			if (Gdx.input.isTouched()) {
-				worldPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
-				b.attract(Field.player.body.getPosition().x, Field.player.body.getPosition().y);
-			}
+			// if (Gdx.input.isTouched()) {
+			worldPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
+			b.attract(Field.player.body.getPosition().x, Field.player.body.getPosition().y);
+			// }
 			b.run(balls, renderer);
 		}
 

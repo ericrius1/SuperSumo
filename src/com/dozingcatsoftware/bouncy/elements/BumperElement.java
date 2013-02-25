@@ -1,6 +1,8 @@
 
 package com.dozingcatsoftware.bouncy.elements;
 
+import static com.dozingcatsoftware.bouncy.util.MathUtils.asFloat;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +13,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.dozingcatsoftware.bouncy.Field;
 import com.dozingcatsoftware.bouncy.IFieldRenderer;
-
-import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
 /** This FieldElement subclass represents a bumper that applies an impulse to a ball when it hits. The impulse magnitude is
  * controlled by the "kick" parameter in the configuration map. */
@@ -33,7 +33,7 @@ public class BumperElement extends FieldElement {
 		this.cy = asFloat(pos.get(1));
 		this.kick = asFloat(params.get("kick"));
 
-		pegBody = Box2DFactory.createCircle(world, cx, cy, radius, true);
+		pegBody = Box2DFactory.createCircle(world, cx, cy, radius, true, 1);
 		pegBodySet = Collections.singleton(pegBody);
 	}
 

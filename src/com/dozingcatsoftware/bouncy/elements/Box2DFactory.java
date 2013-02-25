@@ -15,13 +15,13 @@ import com.badlogic.gdx.physics.box2d.World;
 public class Box2DFactory {
 
 	/** Creates a circle object with the given position and radius. Resitution defaults to 0.6. */
-	public static Body createCircle (World world, float x, float y, float radius, boolean isStatic) {
+	public static Body createCircle (World world, float x, float y, float radius, boolean isStatic, float density) {
 		CircleShape sd = new CircleShape();
 		sd.setRadius(radius);
 
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = sd;
-		fdef.density = 1.0f;
+		fdef.density = density;
 		fdef.friction = 0.0f;
 		fdef.restitution = 0.6f;
 

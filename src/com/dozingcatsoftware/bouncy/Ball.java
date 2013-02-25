@@ -33,10 +33,11 @@ public class Ball {
 	private float maxspeed = 10.0f;
 	float desiredSeparation = 1.0f;
 	float maxforce = 1.0f;
+	float density;
 
 	public Ball (float x, float y) {
 		RAND = new Random();
-		body = Box2DFactory.createCircle(Field.world, x, y, radius, false);
+		body = Box2DFactory.createCircle(Field.world, x, y, radius, false, density);
 		body.setBullet(true);
 		acceleration = new Vector2(0, 0);
 	}

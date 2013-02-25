@@ -30,8 +30,10 @@ public class Player {
 	Vector2 worldTarget;
 	Vector3 touchPoint;
 	Vector3 worldPoint;
+	float density = 40.0f;
+	float box2dW;
 
-	float attractStrength = 3.0f;
+	float attractStrength = density * 20;
 
 	private static final int[] DIRECTION_TO_ANIMATION_MAP = {3, 1, 0, 2};
 
@@ -47,8 +49,8 @@ public class Player {
 		screenUtils = new ScreenTranslationUtils(30f);
 		touchPoint = new Vector3();
 
-		float box2dW = screenUtils.scalarPixelsToWorld(width / 2);
-		body = Box2DFactory.createCircle(Field.world, 10, 20, box2dW, false);
+		box2dW = screenUtils.scalarPixelsToWorld(width / 2);
+		body = Box2DFactory.createCircle(Field.world, 10, 20, box2dW, false, density);
 		body.setBullet(true);
 	}
 
@@ -89,6 +91,8 @@ public class Player {
 			currentFrame -= 3.0f;
 		}
 
+		borders();
+
 	}
 
 	void applyForce (Vector2 force) {
@@ -126,6 +130,16 @@ public class Player {
 	public Vector3 screenToViewport (float x, float y) {
 		Field.cam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 		return touchPoint;
+	}
+
+	void borders () {
+		float x = body.getPosition().x;
+		float y = body.getPosition().y;
+		if (x < -box2dW) body.setTransform(new Vector2(Field.height + box2dW, y), body.getAngle());
+		if (y > Field.height + box2dW) body.setTransform(new Vector2(x, 0 - box2dW), body.getAngle());
+		if (x > Field.width + box2dW) body.setTransform(new Vector2(0 - box2dW, y), body.getAngle());
+		if (y < 0 - box2dW) body.setTransform(new Vector2(x, Field.height + box2dW), body.getAngle());
+
 	}
 
 }
