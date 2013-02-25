@@ -29,9 +29,10 @@ public class Field implements ContactListener {
 
 	static FieldLayout layout;
 	public static World world;
-	Camera cam;
+	static Camera cam;
 	int numBalls = 20;
 	float gravity;
+	Player player;
 
 	Vector3 touchPoint;
 
@@ -77,6 +78,7 @@ public class Field implements ContactListener {
 		public void allRolloversInGroupActivated (Field field, RolloverGroupElement rolloverGroup);
 
 		public void ballInSensorRange (Field field, SensorElement sensor);
+
 	}
 
 	// helper class to represent actions scheduled in the future
@@ -93,6 +95,7 @@ public class Field implements ContactListener {
 
 	public Field (Camera cam) {
 		this.cam = cam;
+		player = new Player();
 
 	}
 

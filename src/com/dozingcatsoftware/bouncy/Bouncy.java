@@ -27,8 +27,8 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		field = new Field(cam);
 		field.resetForLevel(level);
 		Gdx.input.setInputProcessor(this);
-		//Gdx.graphics.setDisplayMode(1280, 720, true);
-		
+		// Gdx.graphics.setDisplayMode(1280, 720, true);
+
 	}
 
 	@Override
@@ -62,6 +62,7 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 
 		renderer.begin();
 		field.flock.run(renderer);
+		field.player.render();
 		renderer.end();
 		renderMean.addValue((TimeUtils.nanoTime() - startRender) / 1000000000.0f);
 
@@ -86,7 +87,5 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 	public void dispose () {
 
 	}
-
-
 
 }

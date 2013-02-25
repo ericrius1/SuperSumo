@@ -32,7 +32,7 @@ public class Flock {
 		for (Ball b : balls) {
 			if (Gdx.input.isTouched()) {
 				worldPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
-				b.attract(worldPoint.x, worldPoint.y);
+				// b.attract(worldPoint.x, worldPoint.y);
 			}
 			b.run(balls, renderer);
 		}

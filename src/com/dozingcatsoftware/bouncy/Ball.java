@@ -86,7 +86,7 @@ public class Ball {
 				tempOtherPosVector = new Vector2(other.body.getWorldCenter().x, other.body.getWorldCenter().y);
 				difference = tempPosVector.sub(tempOtherPosVector);
 				difference.nor();
-				// difference.div(d); // weight by distance
+				difference.div(d); // weight by distance
 				steer.add(difference);
 				count++;
 			}
