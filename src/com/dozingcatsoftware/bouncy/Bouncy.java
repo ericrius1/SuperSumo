@@ -62,6 +62,7 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 
 		renderer.begin();
 		field.flock.run(renderer);
+		field.player.update(Gdx.graphics.getDeltaTime());
 		field.player.render();
 		renderer.end();
 		renderMean.addValue((TimeUtils.nanoTime() - startRender) / 1000000000.0f);
