@@ -39,7 +39,6 @@ public class Ball {
 		body = Box2DFactory.createCircle(Field.world, x, y, radius, false);
 		body.setBullet(true);
 		acceleration = new Vector2(0, 0);
-		screenUtil = new ScreenTranslationUtils(10);
 	}
 
 	void applyForce (Vector2 force) {
@@ -139,7 +138,7 @@ public class Ball {
 	}
 
 	private void render (GLFieldRenderer renderer) {
-		screenPosition = screenUtil.getBodyPixelCoord(body);
+
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 200, 50, 200);
 	}

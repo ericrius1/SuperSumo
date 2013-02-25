@@ -13,7 +13,7 @@ import com.dozingcatsoftware.bouncy.elements.FieldElement;
 
 public class Bouncy extends InputAdapter implements ApplicationListener {
 	OrthographicCamera cam;
-	GLFieldRenderer renderer;
+	static GLFieldRenderer renderer;
 	Field field;
 	int level = 1;
 	WindowedMean physicsMean = new WindowedMean(10);

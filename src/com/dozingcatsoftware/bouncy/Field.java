@@ -30,7 +30,7 @@ public class Field implements ContactListener {
 	static FieldLayout layout;
 	public static World world;
 	static Camera cam;
-	int numBalls = 20;
+	int numBalls = 2;
 	float gravity;
 	Player player;
 
@@ -95,7 +95,6 @@ public class Field implements ContactListener {
 
 	public Field (Camera cam) {
 		this.cam = cam;
-		player = new Player();
 
 	}
 
@@ -139,6 +138,7 @@ public class Field implements ContactListener {
 		delegate = new Field1Delegate();
 
 		SetUpBalls();
+		player = new Player();
 	}
 
 	public void startGame () {
