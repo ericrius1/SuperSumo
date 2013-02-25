@@ -35,15 +35,20 @@ public class Flock {
 			b.attract(Field.player.body.getPosition().x, Field.player.body.getPosition().y);
 			// }
 			b.run(balls, renderer);
+			checkBallsOutOfBounds();
 		}
 
 	}
 
-	void removeBall (Body ball) {
-		int index = ballBodies.indexOf(ball);
-		ballBodies.remove(ball);
-		balls.remove(index);
-
+	void removeBalls () {
+		for (int i = 0; i < balls.size(); i++) {
+			Ball ball = balls.get(i);
+			if (ball.destroy) {
+				ballBodies.remove(ball.body);
+				balls.remove(ball);
+				Player.score++;
+			}
+		}
 	}
 
 	public Vector3 screenToViewport (float x, float y) {
@@ -51,4 +56,12 @@ public class Flock {
 		return touchPoint;
 	}
 
+	public void checkBallsOutOfBounds () {
+		for (Ball b : balls) {
+			if (b.OutOfBounds()) {
+				b.destroy = true;
+			}
+		}
+
+	}
 }

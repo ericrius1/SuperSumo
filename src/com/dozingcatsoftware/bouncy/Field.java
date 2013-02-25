@@ -310,9 +310,7 @@ public class Field implements ContactListener {
 	}
 
 	public void removeBall (Body ball) {
-		flock.removeBall(ball);
-		world.destroyBody(ball);
-
+		flock.removeBalls();
 	}
 
 	/** Adds the given value to the game score. The value is multiplied by the GameState's current multipler. */

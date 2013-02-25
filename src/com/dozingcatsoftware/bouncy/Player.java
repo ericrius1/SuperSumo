@@ -32,6 +32,7 @@ public class Player {
 	Vector3 worldPoint;
 	float density = 40.0f;
 	float box2dW;
+	static int score = 0;
 
 	float attractStrength = density * 20;
 
@@ -57,13 +58,12 @@ public class Player {
 	public void render () {
 		int srcX = (int)currentFrame * width;
 		int srcY = getAnimationRow() * height;
-		batch.begin();
-		Vector2 spritePos = screenUtils.getBodyPixelCoord(body);
-		batch.draw(playerTexture, body.getPosition().x, body.getPosition().y, width, height, srcX, srcY, width, height, false,
-			false);
-		batch.end();
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		Bouncy.renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 50, 200, 20);
+		batch.begin();
+		batch.draw(playerTexture, body.getPosition().x * 20, body.getPosition().y * 30, width, height, srcX, srcY, width, height,
+			false, false);
+		batch.end();
 
 		// If sprite is down, set the sprite's x/y coordinates
 		if (Gdx.input.isTouched()) {
@@ -135,7 +135,7 @@ public class Player {
 	void borders () {
 		float x = body.getPosition().x;
 		float y = body.getPosition().y;
-		if (x < -box2dW) body.setTransform(new Vector2(Field.height + box2dW, y), body.getAngle());
+		if (x < -box2dW) body.setTransform(new Vector2(Field.width + box2dW, y), body.getAngle());
 		if (y > Field.height + box2dW) body.setTransform(new Vector2(x, 0 - box2dW), body.getAngle());
 		if (x > Field.width + box2dW) body.setTransform(new Vector2(0 - box2dW, y), body.getAngle());
 		if (y < 0 - box2dW) body.setTransform(new Vector2(x, Field.height + box2dW), body.getAngle());

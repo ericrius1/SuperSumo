@@ -34,6 +34,7 @@ public class Ball {
 	float desiredSeparation = 1.0f;
 	float maxforce = 1.0f;
 	float density;
+	boolean destroy = false;
 
 	public Ball (float x, float y) {
 		RAND = new Random();
@@ -50,7 +51,8 @@ public class Ball {
 
 	void run (ArrayList<Ball> balls, GLFieldRenderer renderer) {
 		flock(balls);
-		borders();
+
+		// borders();
 		render(renderer);
 	}
 
@@ -131,7 +133,7 @@ public class Ball {
 	void borders () {
 		float x = body.getPosition().x;
 		float y = body.getPosition().y;
-		if (x < -radius) body.setTransform(new Vector2(Field.height + radius, y), body.getAngle());
+		if (x < -radius) body.setTransform(new Vector2(Field.width + radius, y), body.getAngle());
 		if (y > Field.height + radius) body.setTransform(new Vector2(x, 0 - radius), body.getAngle());
 		if (x > Field.width + radius) body.setTransform(new Vector2(0 - radius, y), body.getAngle());
 		if (y < 0 - radius) body.setTransform(new Vector2(x, Field.height + radius), body.getAngle());
@@ -142,6 +144,7 @@ public class Ball {
 
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 200, 50, 200);
+
 	}
 
 	Vector2 limit (Vector2 vec, float max) {
@@ -155,6 +158,11 @@ public class Ball {
 
 	float mag (Vector2 vec) {
 		return (float)Math.sqrt((vec.x * vec.x + vec.y + vec.y));
+	}
+
+	public boolean OutOfBounds () {
+		return (body.getPosition().x < 0 || body.getPosition().x > Field.layout.getWidth() || body.getPosition().y < 0 || body
+			.getPosition().y > Field.layout.getHeight());
 	}
 
 }
