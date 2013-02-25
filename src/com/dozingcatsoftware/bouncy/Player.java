@@ -50,7 +50,6 @@ public class Player {
 		float box2dW = screenUtils.scalarPixelsToWorld(width / 2);
 		body = Box2DFactory.createCircle(Field.world, 10, 20, box2dW, false);
 		body.setBullet(true);
-
 	}
 
 	public void render () {
@@ -73,9 +72,7 @@ public class Player {
 
 				// spritePosition.set(Gdx.input.getX(), screenY);
 			}
-
 		}
-
 	}
 
 	public void update (float deltaTime) {
