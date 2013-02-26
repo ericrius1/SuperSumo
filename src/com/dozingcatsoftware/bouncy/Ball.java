@@ -4,13 +4,16 @@ package com.dozingcatsoftware.bouncy;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.dozingcatsoftware.bouncy.elements.Box2DFactory;
 
 public class Ball {
-
+	SpriteBatch batch;
 	Body body;
 	public int id;
 	Vector2 velocity;
@@ -31,16 +34,34 @@ public class Ball {
 	private float neighborDist = 2.0f;
 	private float cohesionMultiplier = 1.0f;
 	private float maxspeed = 10.0f;
+	static final float FRAME_RATE = 5;
 	float desiredSeparation = 1.0f;
 	float maxforce = 1.0f;
 	float density;
 	boolean destroy = false;
+	Texture enemyTexture;
+	private static final int[] DIRECTION_TO_ANIMATION_MAP = {3, 1, 0, 2};
+	private float currentFrame = 0;
+	float xSpeed;
+	float ySpeed;
+	Vector2 bodyPrevPosition;
+	float scaleFactor = 30.0f;
+
+	private int width;
+	private int height;
+	private static final int REGION_COLUMNS = 3;
+	private static final int REGION_ROWS = 4;
 
 	public Ball (float x, float y) {
+		batch = new SpriteBatch();
+		enemyTexture = new Texture("data/player.png");
+		this.width = enemyTexture.getWidth() / REGION_COLUMNS;
+		this.height = enemyTexture.getHeight() / REGION_ROWS;
 		RAND = new Random();
 		body = Box2DFactory.createCircle(Field.world, x, y, radius, false, density);
 		body.setBullet(true);
 		acceleration = new Vector2(0, 0);
+		bodyPrevPosition = new Vector2(body.getPosition().x, body.getPosition().y);
 	}
 
 	void applyForce (Vector2 force) {
@@ -51,9 +72,25 @@ public class Ball {
 
 	void run (ArrayList<Ball> balls, GLFieldRenderer renderer) {
 		flock(balls);
-
+		update(Gdx.graphics.getDeltaTime());
 		// borders();
 		render(renderer);
+	}
+
+	public void update (float deltaTime) {
+
+		xSpeed = (body.getPosition().x - bodyPrevPosition.x) / deltaTime;
+		ySpeed = (bodyPrevPosition.y - body.getPosition().y) / deltaTime;
+		System.out.println("x Pos : " + body.getPosition().x);
+		System.out.println("x Previous Pos : " + bodyPrevPosition.x);
+		bodyPrevPosition = new Vector2(body.getPosition().x, body.getPosition().y);
+		// current frame = ++ currentFrame % 3
+		currentFrame += FRAME_RATE * deltaTime;
+		// use this to keep precision of where we are since deltaTime is a float
+		while (currentFrame > 3.0f) {
+			currentFrame -= 3.0f;
+		}
+
 	}
 
 	void flock (ArrayList<Ball> balls) {
@@ -141,9 +178,14 @@ public class Ball {
 	}
 
 	private void render (GLFieldRenderer renderer) {
-
+		int srcX = (int)currentFrame * width;
+		int srcY = (getAnimationRow()) * height;
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 200, 50, 200);
+		batch.begin();
+		batch.draw(enemyTexture, body.getPosition().x * scaleFactor - width * .5f, body.getWorldCenter().y * scaleFactor, width,
+			height, srcX, srcY, width, height, false, false);
+		batch.end();
 
 	}
 
@@ -165,4 +207,9 @@ public class Ball {
 			.getPosition().y > Field.layout.getHeight());
 	}
 
+	private int getAnimationRow () {
+		double dirDouble = (Math.atan2(xSpeed, ySpeed) / (Math.PI / 2) + 2);
+		int direction = (int)Math.round(dirDouble) % REGION_ROWS;
+		return DIRECTION_TO_ANIMATION_MAP[direction];
+	}
 }
