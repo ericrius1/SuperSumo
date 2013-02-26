@@ -159,9 +159,9 @@ public class Field implements ContactListener {
 		float dt = (msecs / 1000.0f) / iters;
 
 		for (int i = 0; i < iters; i++) {
-			// clearBallContacts();
+			clearBallContacts();
 			world.step(dt, 10, 10);
-			// processBallContacts();
+			processBallContacts();
 
 		}
 
@@ -205,7 +205,7 @@ public class Field implements ContactListener {
 	// **************************SET UP BALLLLLSSSSS********************************************************
 
 	private void SetUpBalls () {
-		for (float x = layout.getWidth(); x > 0; x -= layout.getWidth() / numBalls) {
+		for (float x = layout.getWidth() - 5; x > 5; x -= layout.getWidth() / numBalls) {
 
 			Ball b = new Ball(x + 2, RAND.nextFloat() * 20.0f + 2);
 			flock.addBall(b);
@@ -258,6 +258,7 @@ public class Field implements ContactListener {
 			}
 			fixtures.clear();
 		}
+
 	}
 
 	// ContactListener methods

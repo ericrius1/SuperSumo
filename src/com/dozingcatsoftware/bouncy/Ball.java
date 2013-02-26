@@ -29,14 +29,12 @@ public class Ball {
 	Vector2 screenPosition;
 	private Vector2 tempPosVector;
 	private Vector2 tempOtherPosVector;
-	private float mouseForceMultiplier = 10.0f;
 	private float neighborDist = 2.0f;
 	private float cohesionMultiplier = 1.0f;
 	private float maxspeed = 10.0f;
 	static final float FRAME_RATE = 5;
 	float desiredSeparation = 1.0f;
 	float maxforce = 1.0f;
-	float density;
 	boolean destroy = false;
 	Texture enemyTexture;
 	private static final int[] DIRECTION_TO_ANIMATION_MAP = {3, 1, 0, 2};
@@ -47,11 +45,14 @@ public class Ball {
 	float scaleFactor = 30.0f;
 	private int numEnemySprites = 4;
 	Random RAND = new Random();
+	private float boundryLaxity = 1;
+	float density = 2.0f;
 
 	private int width;
 	private int height;
 	private static final int REGION_COLUMNS = 3;
 	private static final int REGION_ROWS = 4;
+	private float attractForce = 15.0f;
 
 	public Ball (float x, float y) {
 		batch = new SpriteBatch();
@@ -166,7 +167,7 @@ public class Ball {
 		worldTarget = worldTarget.sub(body.getWorldCenter());
 		// Then scale vector to specified force
 		worldTarget = worldTarget.nor();
-		worldTarget = worldTarget.mul(mouseForceMultiplier);
+		worldTarget = worldTarget.mul(attractForce);
 		// Now apply it to the body's center of mass
 		applyForce(worldTarget);
 	}
@@ -207,8 +208,8 @@ public class Ball {
 	}
 
 	public boolean OutOfBounds () {
-		return (body.getPosition().x < 0 || body.getPosition().x > Field.layout.getWidth() || body.getPosition().y < 0 || body
-			.getPosition().y > Field.layout.getHeight());
+		return (body.getPosition().x < -boundryLaxity || body.getPosition().x > Field.layout.getWidth() + boundryLaxity
+			|| body.getPosition().y < 0 - boundryLaxity || body.getPosition().y > Field.layout.getHeight() + boundryLaxity);
 	}
 
 	private int getAnimationRow () {

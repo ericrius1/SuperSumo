@@ -31,7 +31,7 @@ public class Player {
 	Vector2 worldTarget;
 	Vector3 touchPoint;
 	Vector3 worldPoint;
-	float density = 40.0f;
+	float density = 10.0f;
 	float box2dW;
 	static int score = 0;
 	private float scaleFactor = 30.0f;
