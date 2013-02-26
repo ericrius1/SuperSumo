@@ -34,6 +34,7 @@ public class Player {
 	float density = 40.0f;
 	float box2dW;
 	static int score = 0;
+	private float scaleFactor = 30.0f;
 
 	float attractStrength = density * 20;
 
@@ -63,8 +64,8 @@ public class Player {
 		CircleShape shape = (CircleShape)body.getFixtureList().get(0).getShape();
 		Bouncy.renderer.fillCircle(body.getPosition().x, body.getPosition().y, shape.getRadius(), 50, 200, 20);
 		batch.begin();
-		batch.draw(playerTexture, body.getPosition().x * 20, body.getPosition().y * 30, width, height, srcX, srcY, width, height,
-			false, false);
+		batch.draw(playerTexture, body.getPosition().x * scaleFactor - width * .5f, body.getWorldCenter().y * scaleFactor, width,
+			height, srcX, srcY, width, height, false, false);
 		batch.end();
 
 		// If sprite is down, set the sprite's x/y coordinates
