@@ -17,7 +17,6 @@ public class Ball {
 	Body body;
 	public int id;
 	Vector2 velocity;
-	Random RAND;
 	private float radius = 0.4f;
 	private Vector2 acceleration;
 	private Vector2 sum;
@@ -46,6 +45,8 @@ public class Ball {
 	float ySpeed;
 	Vector2 bodyPrevPosition;
 	float scaleFactor = 30.0f;
+	private int numEnemySprites = 4;
+	Random RAND = new Random();
 
 	private int width;
 	private int height;
@@ -54,7 +55,10 @@ public class Ball {
 
 	public Ball (float x, float y) {
 		batch = new SpriteBatch();
-		enemyTexture = new Texture("data/player.png");
+		String fileName = "data/red";
+		fileName = fileName.concat(String.valueOf(RAND.nextInt(numEnemySprites) + 1));
+		fileName = fileName.concat(".png");
+		enemyTexture = new Texture(fileName);
 		this.width = enemyTexture.getWidth() / REGION_COLUMNS;
 		this.height = enemyTexture.getHeight() / REGION_ROWS;
 		RAND = new Random();
