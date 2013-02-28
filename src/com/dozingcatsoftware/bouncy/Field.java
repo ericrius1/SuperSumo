@@ -30,7 +30,7 @@ public class Field implements ContactListener {
 	static FieldLayout layout;
 	public static World world;
 	static Camera cam;
-	int numBalls = 10;
+	int numBalls = 20;
 	float gravity;
 	static Player player;
 

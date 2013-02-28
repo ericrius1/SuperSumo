@@ -31,12 +31,12 @@ public class Player {
 	Vector2 worldTarget;
 	Vector3 touchPoint;
 	Vector3 worldPoint;
-	float density = 10.0f;
+	float density = 2.0f;
 	float box2dW;
 	static int score = 0;
 	private float scaleFactor = 30.0f;
 
-	float attractStrength = density * 20;
+	float attractStrength = 800 / density;
 
 	private static final int[] DIRECTION_TO_ANIMATION_MAP = {3, 1, 0, 2};
 

@@ -21,40 +21,28 @@
 			               	
 		  
 			
-		    {
+			{
 		    	"class": "WallElement", 
-		       	"position": [0, 25, 5, 30],
-		       	"kick": 3.5,
+		       	"position": [.1, 29.9, .1, .1],
+		       	"kick": 3.9.5,
+		       	"color": [0, 255, 255]
+		    },
+			{
+		    	"class": "WallElement", 
+		       	"position": [19.9, 29.9, 19.9, .1],
+		       	"kick": 1.75,
+		       	"color": [255, 0, 255]
+		    },
+			{
+		    	"class": "WallElement", 
+		       	"position": [2, .1, 18, .1],
+		       	"kick": 9.5,
 		       	"color": [0, 0, 255]
 		    },
 			{
 		    	"class": "WallElement", 
-		       	"position": [15, 30, 20, 25],
-		       	"kick": 3.5,
-		       	"color": [0, 0, 255]
-		    },
-			{
-		    	"class": "WallElement", 
-		       	"position": [0, 5, 5, 0],
-		       	"kick": 3.5,
-		       	"color": [0, 0, 255]
-		    },
-			{
-		    	"class": "WallElement", 
-		       	"position": [15, 0, 20, 5],
-		       	"kick": 3.5,
-		       	"color": [0, 0, 255]
-		    },
-			{
-		    	"class": "WallElement", 
-		       	"position": [1, 23, 1, 10],
-		       	"kick": 3.5,
-		       	"color": [0, 0, 255]
-		    },
-			{
-		    	"class": "WallElement", 
-		       	"position": [19, 23, 19, 10],
-		       	"kick": 3.5,
+		       	"position": [2, 29.9, 18, 29.9],
+		       	"kick": 5.5,
 		       	"color": [0, 0, 255]
 		    },
 			
