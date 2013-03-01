@@ -46,13 +46,13 @@ public class Ball {
 	private int numEnemySprites = 4;
 	Random RAND = new Random();
 	private float boundryLaxity = 1;
-	float density = 5.0f;
+	float density = 4.0f;
 
 	private int width;
 	private int height;
 	private static final int REGION_COLUMNS = 3;
 	private static final int REGION_ROWS = 4;
-	private float attractForce = 500 / density;
+	private float attractForce = 300 / density;
 
 	public Ball (float x, float y) {
 		batch = new SpriteBatch();
